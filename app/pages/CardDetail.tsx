@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, ActivityIndicator } from 'react-native';
+import { useFonts, CinzelDecorative_400Regular } from '@expo-google-fonts/cinzel-decorative';
 const tarotData = require('../../tarot_data.json');
 
 type TarotCard = {
@@ -36,12 +37,24 @@ const imageMap: { [key: string]: any } = {
 });
 
 const CardDetail = () => {
+  let [fontsLoaded] = useFonts({
+    CinzelDecorative_400Regular,
+  });
+
+  if (!fontsLoaded) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   // 예시로 첫 번째 카드 정보를 사용합니다.
   const card = tarotData[0];
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{card.kr.title}</Text>
+      <Text style={[styles.title, { fontFamily: 'CinzelDecorative_400Regular' }]}>{card.kr.title}</Text>
       <Image source={card.image} style={styles.image} />
       <Text style={styles.description}>{card.kr.total}</Text>
     </View>
@@ -54,12 +67,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#000', // Background color set to black
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#fff', // Text color set to white
   },
   image: {
     width: 200,
@@ -69,6 +83,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     textAlign: 'center',
+    color: '#fff', // Text color set to white
   },
 });
 

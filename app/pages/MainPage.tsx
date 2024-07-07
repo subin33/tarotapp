@@ -1,26 +1,29 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, LogBox } from 'react-native';
 import { useFonts, CinzelDecorative_400Regular } from '@expo-google-fonts/cinzel-decorative';
 import { NotoSansKR_400Regular } from '@expo-google-fonts/noto-sans-kr';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import LottieView from 'lottie-react-native';
+import CardList from '../components/CardList';
+import Loading from '../components/Loading';
 import data from '../../data.json';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 SplashScreen.preventAutoHideAsync();
 
-type ImageMap = {
-  [key: string]: any;
+type DataType = {
+  list: {
+    title: string;
+    desc: string;
+    image: string;
+  }[];
 };
 
-const imageMap: ImageMap = {
-  money: require('../../assets/images/money.png'),
-  love: require('../../assets/images/love.png'),
-};
-
-export default function App() {
+export default function MainPage() {
+  LogBox.ignoreLogs(['Warning: ...']);
   const [appIsReady, setAppIsReady] = useState(false);
+  const [state, setState] = useState<DataType>({ list: [] });
+  const [isLoad, setIsLoad] = useState(true);
 
   let [fontsLoaded] = useFonts({
     CinzelDecorative_400Regular,
@@ -34,6 +37,13 @@ export default function App() {
     }
   }, [fontsLoaded]);
 
+  useEffect(() => {
+    setState(data);
+    setTimeout(() => {
+      setIsLoad(false);
+    }, 5000);
+  }, []);
+
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       await SplashScreen.hideAsync();
@@ -44,7 +54,7 @@ export default function App() {
     return null;
   }
 
-  return (
+  return isLoad ? <Loading /> : (
     <View style={styles.container} onLayout={onLayoutRootView}>
       <StatusBar style="auto" />
       <LottieView 
@@ -60,18 +70,7 @@ export default function App() {
           source={require('../../assets/images/main.png')} 
           style={styles.mainImage}
         />
-        {data.list.map((item, index) => (
-          <View key={index} style={styles.section}>
-            <Image 
-              source={imageMap[item.image]} 
-              style={styles.icon}
-            />
-            <View style={styles.sectionText}>
-              <Text style={[styles.sectionTitle, { fontFamily: 'NotoSansKR_400Regular' }]}>{item.title}</Text>
-              <Text style={[styles.sectionContent, { fontFamily: 'NotoSansKR_400Regular' }]}>{item.desc}</Text>
-            </View>
-          </View>
-        ))}
+        <CardList />
         <Text style={styles.footer}>건강운도 곧 준비중입니다 😺</Text>
       </ScrollView>
     </View>
@@ -104,38 +103,6 @@ const styles = StyleSheet.create({
     width: 350,
     height: 200,
     borderRadius: 10,
-  },
-  section: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    marginTop: 35,
-    padding: 10,
-    backgroundColor: '#333333',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-  },
-  icon: {
-    width: 100,
-    height: 100,
-    marginRight: 16,
-    borderRadius: 5,
-  },
-  sectionText: {
-    flex: 1,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#fff',
-  },
-  sectionContent: {
-    fontSize: 16,
-    color: '#fff',
   },
   footer: {
     fontSize: 18,
