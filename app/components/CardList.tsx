@@ -1,6 +1,9 @@
+// CardList.tsx
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import data from '../../data.json';
+import { StackParamList } from '../navigation/StackNavigator'; // StackNavigator 파일에서 타입 정의 가져오기
 
 type ImageMap = {
   [key: string]: any;
@@ -12,10 +15,16 @@ const imageMap: ImageMap = {
 };
 
 const CardList = () => {
+  const navigation = useNavigation<NavigationProp<StackParamList>>();
+
   return (
     <>
       {data.list.map((item, index) => (
-        <View key={index} style={styles.section}>
+        <TouchableOpacity
+          key={index}
+          style={styles.section}
+          onPress={() => navigation.navigate('CardPage', { item })}
+        >
           <Image 
             source={imageMap[item.image]} 
             style={styles.icon}
@@ -24,7 +33,7 @@ const CardList = () => {
             <Text style={styles.sectionTitle}>{item.title}</Text>
             <Text style={styles.sectionContent}>{item.desc}</Text>
           </View>
-        </View>
+        </TouchableOpacity>
       ))}
     </>
   );

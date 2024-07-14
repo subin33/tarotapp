@@ -1,8 +1,15 @@
 import React from 'react';
-import MainPage from './pages/MainPage'
-import CardDetail from './pages/CardDetail';
-import CardChoice from './pages/CardChoice';
+import { StatusBar } from 'expo-status-bar';
+import StackNavigator from './navigation/StackNavigator';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreAllLogs(true);
 
 export default function App() {
-  return <MainPage/>;
+  return (
+    <>
+      <StatusBar style="dark" />
+      <StackNavigator />
+    </>
+  );
 }

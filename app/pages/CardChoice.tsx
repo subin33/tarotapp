@@ -1,10 +1,13 @@
 // app/CardChoice.tsx
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; // useNavigation 훅 가져오기
+import { MaterialIcons } from '@expo/vector-icons'; // MaterialIcons 가져오기
 
 const cardImage = require('../../assets/images/card-back.png'); // 카드 뒷면 이미지 경로
 
 export default function CardChoice() {
+  const navigation = useNavigation(); // useNavigation 훅 사용
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
 
   const handleCardSelect = (index: number) => {
@@ -24,6 +27,11 @@ export default function CardChoice() {
 
   return (
     <View style={styles.container}>
+      {/* 뒤로 가기 버튼 */}
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <MaterialIcons name="arrow-back" size={24} color="#fff" />
+      </TouchableOpacity>
+
       <Text style={styles.title}>마음이 이끄는 카드 세장을 선택하세요</Text>
       <View style={styles.cardContainer}>
         {Array.from({ length: 9 }).map((_, index) => (
@@ -55,6 +63,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 16,
   },
+  backButton: {
+    position: 'absolute',
+    top: 40, // 필요한 경우 이 값을 조정하여 위치를 변경하세요
+    left: 20, // 필요한 경우 이 값을 조정하여 위치를 변경하세요
+    zIndex: 1, // 버튼이 다른 요소 위에 렌더링되도록 zIndex를 설정합니다
+  },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -72,7 +86,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 150,
     margin: 10,
-    borderRadius: 15, // 카드의 모서리를 둥글게 수정
+    borderRadius: 7, // 카드의 모서리를 둥글게 수정
   },
   selectedCard: {
     borderWidth: 3,
